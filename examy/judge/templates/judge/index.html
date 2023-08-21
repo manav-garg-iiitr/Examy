@@ -1,0 +1,68 @@
+{% extends "judge/base.html" %}
+
+{% block styles %}
+<style>
+    .contest-card{
+        transition: 0.2s ease-in-out all;
+    }
+    .contest-card:hover{
+        width: 26rem !important;
+        height: 11rem !important;
+        background-color: rgb(169 175 255 / 20%);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="d-inline-block">Contests</h1>
+        {% if user.is_authenticated %}
+        <a class="btn btn-icon btn-primary bg-gradient-dark float-right" href="{% url 'judge:new_contest' %}">
+            <span class="btn-inner--icon"><i class="fas fa-plus"></i></span>
+            <span class="btn-inner--text">New Contest</span>
+        </a>
+        {% endif %}
+    </div>
+    <div class="col-12"  style="
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+">
+        {% for contest, permission in contests %}
+        {% if permission != None %}
+        <!-- TODO Handle when all are None -->
+        <div class="card my-3 contest-card" style="width: 25rem; height: 10rem">
+            <div class="card-body" style="
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        ">
+                <div style="
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            ">
+                    <h4 class="d-inline-block">{{ contest.name }}</h4>
+                    
+                    <a href="{% url 'judge:contest_detail' contest.pk %}" class="card-link">Go to contest page</a>
+                </div>
+                <div class="float-right">
+                    {% if contest.public %}<span class="badge badge-success">Public</span>{% else %}
+                    <span class="badge badge-default">Private</span>{% endif %}
+                    {% if permission %}<span class="badge badge-warning">Poster</span>
+                    {% else %}<span class="badge badge-warning">Participant</span>{% endif %}
+                    
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% empty %}
+        <div class="col-12">
+            No active contests for the time being. Create a new contest or check later.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
